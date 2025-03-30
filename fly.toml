@@ -1,0 +1,39 @@
+# fly.toml app configuration file generated for intg-da-v2 on 2025-03-30T02:18:04+03:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'intg-da-v2'
+primary_region = 'fra'
+
+[build]
+
+[env]
+  PORT = '3000'
+  SCOPES = 'write_products;read_products'
+  SHOPIFY_API_KEY = '88588a9385d54e853322cbd112008856'
+  SHOPIFY_API_SECRET='ef07a5aa74c66828e34c08ea68c13dd9'
+  SHOPIFY_APP_URL = 'https://intg-da-v2.fly.dev'
+
+[processes]
+  app = 'node ./dbsetup.js npm run docker-start'
+
+[[mounts]]
+  source = 'data'
+  destination = '/data'
+  auto_extend_size_threshold = 80
+  auto_extend_size_increment = '1GB'
+  auto_extend_size_limit = '10GB'
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
